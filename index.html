@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<head>    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_cb66b9ca4b0ecd93fddc0a61a8a55f7b {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+            </style>
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
+</head>
+<body>    
+    
+            <div class="folium-map" id="map_cb66b9ca4b0ecd93fddc0a61a8a55f7b" ></div>
+        
+</body>
+<script>    
+    
+            var map_cb66b9ca4b0ecd93fddc0a61a8a55f7b = L.map(
+                "map_cb66b9ca4b0ecd93fddc0a61a8a55f7b",
+                {
+                    center: [51.519659375, -0.113402875],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 11.5,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_d1e8737454779e1b5f362ec1b06813f0 = L.tileLayer(
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "Data by \u0026copy; \u003ca href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_cb66b9ca4b0ecd93fddc0a61a8a55f7b);
+        
+    
+            var marker_cluster_cdbc777210ab7f9ad4e053c955307ab1 = L.markerClusterGroup(
+                {}
+            );
+            map_cb66b9ca4b0ecd93fddc0a61a8a55f7b.addLayer(marker_cluster_cdbc777210ab7f9ad4e053c955307ab1);
+        
+    
+            var marker_af67f1f559097afacba5e1b1115d0af1 = L.marker(
+                [51.49892, -0.077847],
+                {}
+            ).addTo(marker_cluster_cdbc777210ab7f9ad4e053c955307ab1);
+        
+    
+        var popup_c8248a588e9eb18e3a33ccd443fc9f14 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_a372eef418bf4124d0cf66b18baa1cfd = $(`<div id="html_a372eef418bf4124d0cf66b18baa1cfd" style="width: 100.0%; height: 100.0%;">     <b>Purbrook Estate</b><br>     Beds: 3<br>     WC: 1<br>     Garden: 0<br>     Area (sqft): 750<br>     Price: 475000<br>     Agency: waterview<br>     Renovation Cost: 25000<br>     Yearly Revenue: 75700<br>     <img src='https://picsum.photos/200/300', width="200">      </div>`)[0];
+            popup_c8248a588e9eb18e3a33ccd443fc9f14.setContent(html_a372eef418bf4124d0cf66b18baa1cfd);
+        
+
+        marker_af67f1f559097afacba5e1b1115d0af1.bindPopup(popup_c8248a588e9eb18e3a33ccd443fc9f14)
+        ;
+
+        
+    
+    
+            var marker_1472e35003c08cd5ffd4cf7b98474cb9 = L.marker(
+                [51.491655, -0.085024],
+                {}
+            ).addTo(marker_cluster_cdbc777210ab7f9ad4e053c955307ab1);
+        
+    
+        var popup_c5353891a1c2699b40af95ef15be7d39 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_8947ae8cec1330c923b82086462c5130 = $(`<div id="html_8947ae8cec1330c923b82086462c5130" style="width: 100.0%; height: 100.0%;">     <b>Congreve Street</b><br>     Beds: 3<br>     WC: 2<br>     Garden: 1<br>     Area (sqft): 897<br>     Price: 525000<br>     Agency: foxtons<br>     Renovation Cost: 20000<br>     Yearly Revenue: 59600<br>     <img src='https://picsum.photos/200/300', width="200">      </div>`)[0];
+            popup_c5353891a1c2699b40af95ef15be7d39.setContent(html_8947ae8cec1330c923b82086462c5130);
+        
+
+        marker_1472e35003c08cd5ffd4cf7b98474cb9.bindPopup(popup_c5353891a1c2699b40af95ef15be7d39)
+        ;
+
+        
+    
+    
+            var marker_2ccee66c01b4de3f7bad0be207528027 = L.marker(
+                [51.53671, -0.077481],
+                {}
+            ).addTo(marker_cluster_cdbc777210ab7f9ad4e053c955307ab1);
+        
+    
+        var popup_2584f05bb8e75ac63a9575f5ceaf6372 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_fc81f2c9742a131301816492b147473b = $(`<div id="html_fc81f2c9742a131301816492b147473b" style="width: 100.0%; height: 100.0%;">     <b>Baltic Place</b><br>     Beds: 2<br>     WC: 1<br>     Garden: 0<br>     Area (sqft): 833<br>     Price: 550000<br>     Agency: stirling ackroyd<br>     Renovation Cost: 5000<br>     Yearly Revenue: 52800<br>     <img src='https://picsum.photos/200/300', width="200">      </div>`)[0];
+            popup_2584f05bb8e75ac63a9575f5ceaf6372.setContent(html_fc81f2c9742a131301816492b147473b);
+        
+
+        marker_2ccee66c01b4de3f7bad0be207528027.bindPopup(popup_2584f05bb8e75ac63a9575f5ceaf6372)
+        ;
+
+        
+    
+    
+            var marker_e9f271e9f1338c6a90a73c749b57c2c2 = L.marker(
+                [51.524157, -0.188245],
+                {}
+            ).addTo(marker_cluster_cdbc777210ab7f9ad4e053c955307ab1);
+        
+    
+        var popup_7e5ca7e7769407e0e95251c96bbd9925 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_6a00b6f698614f84e429560459c647de = $(`<div id="html_6a00b6f698614f84e429560459c647de" style="width: 100.0%; height: 100.0%;">     <b>Sutherland Avenue</b><br>     Beds: 2<br>     WC: 1<br>     Garden: 1<br>     Area (sqft): 565<br>     Price: 550000<br>     Agency: dexters<br>     Renovation Cost: 10000<br>     Yearly Revenue: 64400<br>     <img src='https://picsum.photos/200/300', width="200">      </div>`)[0];
+            popup_7e5ca7e7769407e0e95251c96bbd9925.setContent(html_6a00b6f698614f84e429560459c647de);
+        
+
+        marker_e9f271e9f1338c6a90a73c749b57c2c2.bindPopup(popup_7e5ca7e7769407e0e95251c96bbd9925)
+        ;
+
+        
+    
+    
+            var marker_23b42e8cc9b594b4a7d1b78e178e6d49 = L.marker(
+                [51.512468, -0.215889],
+                {}
+            ).addTo(marker_cluster_cdbc777210ab7f9ad4e053c955307ab1);
+        
+    
+        var popup_4a664ca325cf9bfbd109e6703b6ff95d = L.popup({"maxWidth": "100%"});
+
+        
+            var html_289299912cf9f45e504e23a148556e40 = $(`<div id="html_289299912cf9f45e504e23a148556e40" style="width: 100.0%; height: 100.0%;">     <b>Lancaster West</b><br>     Beds: 2<br>     WC: 2<br>     Garden: 0<br>     Area (sqft): 668<br>     Price: 500000<br>     Agency: winkworth<br>     Renovation Cost: 8000<br>     Yearly Revenue: 69600<br>     <img src='https://picsum.photos/200/300', width="200">      </div>`)[0];
+            popup_4a664ca325cf9bfbd109e6703b6ff95d.setContent(html_289299912cf9f45e504e23a148556e40);
+        
+
+        marker_23b42e8cc9b594b4a7d1b78e178e6d49.bindPopup(popup_4a664ca325cf9bfbd109e6703b6ff95d)
+        ;
+
+        
+    
+    
+            var marker_2209f31fed6a9fa704e66b844d2db563 = L.marker(
+                [51.530816, -0.069007],
+                {}
+            ).addTo(marker_cluster_cdbc777210ab7f9ad4e053c955307ab1);
+        
+    
+        var popup_df313bbed4d5bb89fad05c0a92dc3917 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_b48ec1b3fc1b27b454aa8614eef9c716 = $(`<div id="html_b48ec1b3fc1b27b454aa8614eef9c716" style="width: 100.0%; height: 100.0%;">     <b>London Terrace Hoxton</b><br>     Beds: 2<br>     WC: 1<br>     Garden: 0<br>     Area (sqft): 610<br>     Price: 480000<br>     Agency: dexters<br>     Renovation Cost: 10000<br>     Yearly Revenue: 54700<br>     <img src='https://picsum.photos/200/300', width="200">      </div>`)[0];
+            popup_df313bbed4d5bb89fad05c0a92dc3917.setContent(html_b48ec1b3fc1b27b454aa8614eef9c716);
+        
+
+        marker_2209f31fed6a9fa704e66b844d2db563.bindPopup(popup_df313bbed4d5bb89fad05c0a92dc3917)
+        ;
+
+        
+    
+    
+            var marker_1843578d8397688851624e48ce777a46 = L.marker(
+                [51.52832, -0.082419],
+                {}
+            ).addTo(marker_cluster_cdbc777210ab7f9ad4e053c955307ab1);
+        
+    
+        var popup_10940fb771e851d1f2a7d234bdd8adc2 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_a0b2f350092bd169fc60e7d170f47412 = $(`<div id="html_a0b2f350092bd169fc60e7d170f47412" style="width: 100.0%; height: 100.0%;">     <b>Royal Oak Court</b><br>     Beds: 2<br>     WC: 1<br>     Garden: 1<br>     Area (sqft): 670<br>     Price: 550000<br>     Agency: winkworth<br>     Renovation Cost: 10000<br>     Yearly Revenue: 67600<br>     <img src='https://picsum.photos/200/300', width="200">      </div>`)[0];
+            popup_10940fb771e851d1f2a7d234bdd8adc2.setContent(html_a0b2f350092bd169fc60e7d170f47412);
+        
+
+        marker_1843578d8397688851624e48ce777a46.bindPopup(popup_10940fb771e851d1f2a7d234bdd8adc2)
+        ;
+
+        
+    
+    
+            var marker_d5efec8c138b52690439f34b2ea166f1 = L.marker(
+                [51.534229, -0.111311],
+                {}
+            ).addTo(marker_cluster_cdbc777210ab7f9ad4e053c955307ab1);
+        
+    
+        var popup_abf7d9b69d16ef23fd75be2f645358b1 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_2dc33e11b71def18f999cd30c12f882a = $(`<div id="html_2dc33e11b71def18f999cd30c12f882a" style="width: 100.0%; height: 100.0%;">     <b>Maygood Street</b><br>     Beds: 2<br>     WC: 1<br>     Garden: 0<br>     Area (sqft): 506<br>     Price: 450000<br>     Agency: winkworth<br>     Renovation Cost: 25000<br>     Yearly Revenue: 69900<br>     <img src='https://picsum.photos/200/300', width="200">      </div>`)[0];
+            popup_abf7d9b69d16ef23fd75be2f645358b1.setContent(html_2dc33e11b71def18f999cd30c12f882a);
+        
+
+        marker_d5efec8c138b52690439f34b2ea166f1.bindPopup(popup_abf7d9b69d16ef23fd75be2f645358b1)
+        ;
+
+        
+    
+</script>

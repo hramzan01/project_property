@@ -1,0 +1,9 @@
+name,beds,wc,garden,price,area_sft,location,leasehold,ctax_band,service_charge,agency,URL,reno_cost,yearly_rev,lat,lon
+Purbrook Estate,3,1,0,475000,750,SE1 3DE,0,-,-,waterview,https://www.zoopla.co.uk/for-sale/details/66786852/?utm_source=v1%3A5bWFDybfWx7C7AGpeagt7mP3PgcqjuqJ&utm_medium=api,25000,75700,51.49892,-0.077847
+Congreve Street,3,2,1,525000,897,SE17 1TG,85,c,-,foxtons,https://www.zoopla.co.uk/for-sale/details/66827753/?utm_source=v1%3A5bWFDybfWx7C7AGpeagt7mP3PgcqjuqJ&utm_medium=api,20000,59600,51.491655,-0.085024
+Baltic Place,2,1,0,550000,833,N1 5AQ,112,d,3000,stirling ackroyd,https://www.rightmove.co.uk/properties/86446443#/?channel=RES_BUY,5000,52800,51.53671,-0.077481
+Sutherland Avenue,2,1,1,550000,565,W9 2JD,0,-,-,dexters,https://www.rightmove.co.uk/properties/145967003#/?channel=RES_BUY,10000,64400,51.524157,-0.188245
+Lancaster West,2,2,0,500000,668,W11 4AT,90,-,2200,winkworth,https://www.rightmove.co.uk/properties/145713113#/?channel=RES_BUY,8000,69600,51.512468,-0.215889
+London Terrace Hoxton,2,1,0,480000,610,E2 7SQ,-,-,-,dexters,https://www.dexters.co.uk/property-for-sale/flat-for-sale-in-london-terrace-london-e2/217578,10000,54700,51.530816,-0.069007
+Royal Oak Court,2,1,1,550000,670,N1 6ES,84,b,1883,winkworth,https://www.winkworth.co.uk/properties/sales/royal-oak-court-pitfield-street-n1/HIH220021,10000,67600,51.52832,-0.082419
+Maygood Street,2,1,0,450000,506,N1 0HB,959,-,-,winkworth,https://www.winkworth.co.uk/properties/sales/maygood-street-london-n1/ISL220424,25000,69900,51.534229,-0.111311
