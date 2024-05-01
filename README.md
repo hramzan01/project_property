@@ -1,4 +1,4 @@
-# Project Property
+# Project Property (development build)
 
 Project Property is a tool designed to scrape property websites, analyze the data, and provide insights to users seeking the best value properties. It utilizes Python libraries along with Plotly and Streamlit for the frontend.
 
