@@ -58,7 +58,7 @@ headers = {
 # index is the page number of the website
 index = 0
 
-for pages in range(3):
+for pages in range(10):
 
     # the website changes if the you are on page 1 as compared to other pages
     if index == 0:
@@ -106,9 +106,14 @@ for pages in range(3):
         if link not in ulinks:
             ulinks.append(link)
 
-    links = [f'https://www.rightmove.co.uk{link}' for link in ulinks]
+
+    # Replace missing links with "missing"
+    links = [f'https://www.rightmove.co.uk{link}' if link else "missing" for link in ulinks]
+    # links = [f'https://www.rightmove.co.uk{link}' for link in ulinks]
     for link in links:
         link_list.append(link)
+
+
 
 
     # code to ensure that we do not overwhelm the website
