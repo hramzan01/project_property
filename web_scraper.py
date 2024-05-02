@@ -72,10 +72,16 @@ locations = [address.text.strip() for address in locations]
 description = soup.find_all('div', class_="propertyCard-description")
 description = [desc.text.strip() for desc in description]
 
-# finaly the link to the property
+# # finaly the link to the property
 links = soup.find_all('a', class_="propertyCard-link")
-links = list(set([link['href'] for link in links]))
-links = [f'https://www.rightmove.co.uk{link}' for link in links]
+links = [link['href'] for link in links]
+ulinks = []
+for link in links:
+    if link not in ulinks:
+        ulinks.append(link)
+
+links = [f'https://www.rightmove.co.uk{link}' for link in ulinks]
+
 
 '''CONVERT THE SCRAPED DATA INTO A PANDAS DATAFRAME'''
 
@@ -86,7 +92,7 @@ data = {
     "links": links
 }
 
-#pd.DataFrame(data).to_csv('rightmove_data.csv', index=False)
+pd.DataFrame(data).to_csv('data/raw_data/rightmove_data.csv', index=False)
 
 
 
@@ -96,7 +102,7 @@ data = {
 #print(len(locations))
 #print(len(description))
 #print(len(links))
-print(soup)
+# print(soup)
 
 
 
