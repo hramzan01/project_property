@@ -4,7 +4,9 @@ import time
 import random
 from bs4 import BeautifulSoup
 
-''' 00 PARSE RIGHTMOVE WEBSITE FOR PROPERTY DATA '''
+''' 
+00 PARSE RIGHTMOVE WEBSITE FOR PROPERTY DATA
+'''
 
 # Lists to store the desired data
 price_list = []
@@ -52,12 +54,15 @@ BOROUGHS = {
 # test with single borough first before looping through all boroughs
 borough = BOROUGHS["Tower Hamlets"]
 
-# allos us to scrape the website without being blocked
+# allows us to scrape the website without being blocked
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36"
 }
 
-'''01 PAGINATE & EXTRACT THE RELEVANT DATA FROM THE WEBPAGE '''
+
+'''
+01 PAGINATE & EXTRACT THE RELEVANT DATA FROM THE WEBPAGE
+'''
 
 # index is the page number of the website
 index = 0
@@ -109,7 +114,6 @@ for pages in range(10):
 
     # Replace missing links with "missing"
     links = [f'https://www.rightmove.co.uk{link}' if link else "missing" for link in ulinks]
-    # links = [f'https://www.rightmove.co.uk{link}' for link in ulinks]
     for link in links:
         link_list.append(link)
 
@@ -123,7 +127,9 @@ for pages in range(10):
         break
 
 
-'''03 CONVERT THE SCRAPED DATA INTO A PANDAS DATAFRAME & EXPORT TO CSV'''
+'''
+03 CONVERT THE SCRAPED DATA INTO A PANDAS DATAFRAME & EXPORT TO CSV
+'''
 
 #Create a dictionary to store the data
 data = {
