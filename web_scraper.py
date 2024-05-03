@@ -4,9 +4,7 @@ import time
 import random
 from bs4 import BeautifulSoup
 
-''' 
-00 PARSE RIGHTMOVE WEBSITE FOR PROPERTY DATA
-'''
+
 
 # Dictionary of London boroughs and their corresponding Rightmove IDs
 BOROUGHS = {
@@ -51,6 +49,9 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36"
 }
 
+''' 
+00 PARSE RIGHTMOVE WEBSITE FOR PROPERTY DATA
+'''
 def scrape_rightmove(borough, num_pages):
     '''
     Function to scrape the Rightmove website for property data
@@ -145,22 +146,14 @@ def scrape_rightmove(borough, num_pages):
         "links": link_list
     }
 
-    # Debug to check output
-    print(len(price_list))
-    print(len(address_list))
-    print(len(description_list))
-    print(len(link_list))
-
     # Convert to dataframe and export csv
     pd.DataFrame(data).to_csv('data/raw_data/rightmove_data.csv', index=False)
     
     return data
 
-
 '''
-SCRAPE ADDITIONAL DATA FROM INDIVIDUAL PROPERTY PAGES
+01 SCRAPE ADDITIONAL DATA FROM INDIVIDUAL PROPERTY PAGES
 '''
-
 def scrape_additional():
     
     # Additional data to scrape
@@ -187,7 +180,29 @@ def scrape_additional():
 
         property_card = soup.find_all('dd', class_='_3ZGPwl2N1mHAJH3cbltyWn')
         info = [i.text.strip() for i in property_card]
-        info[3] = info[3].replace(' sq m', '').replace('sq ft', '').replace(',', '').split()
+        
+        # skip property if data is missing
+        if len(info) < 5:
+            # append empty data to the lists
+            property_type.append(info[0])
+            bedrooms.append(0)
+            bathrooms.append(0)
+            sq_ft.append(0)
+            sq_m.append(0)
+            tenure.append(0)
+            
+            # code to ensure that we do not overwhelm the website
+            time.sleep(random.randint(1, 3))
+            counter += 1
+            
+            # continue to next iteration
+            continue
+        
+        # check if the data is missing
+        if info[3] == 'Ask agent':
+            info[3] = '0 sq ft 0 sq m'
+        else:
+            info[3] = info[3].replace(' sq m', '').replace('sq ft', '').replace(',', '').split()
 
 
         # append the data to the lists
@@ -201,14 +216,6 @@ def scrape_additional():
         # code to ensure that we do not overwhelm the website
         time.sleep(random.randint(1, 3))
         counter += 1
-        
-    # Debug to check output
-    # print(property_type)
-    # print(bedrooms)
-    # print(bathrooms)
-    # print(sq_ft)
-    # print(sq_m)
-    # print(tenure)
 
     if len(property_type) == len(bedrooms) == len(bathrooms) == len(sq_ft) == len(sq_m) == len(tenure):
         print("Data scraped successfully!")
@@ -228,6 +235,23 @@ def scrape_additional():
     # Add to existing dataframe and export to csv
     pd.DataFrame(data).to_csv('data/raw_data/rightmove_extra.csv', index=False)
     
+    return data
+    
+'''
+02 COMBINE THE TWO DATAFRAMES INTO ONE
+'''
+def scrape_all(borough, num_pages):
+    # Call the two functions
+    basic_data = pd.DataFrame(scrape_rightmove(borough, num_pages))
+    extra_data = pd.DataFrame(scrape_additional())
+    
+    combined_data = pd.concat([basic_data, extra_data], axis=1)
+    
+    combined_data.to_csv('data/raw_data/rightmove_combined.csv', index=False)
+
+
+
 # Call the function
 # scrape_rightmove(borough=borough, num_pages=2)
-scrape_additional()
+# scrape_additional()
+scrape_all(borough=borough, num_pages=2)
