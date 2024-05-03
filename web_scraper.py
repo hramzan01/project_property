@@ -44,8 +44,6 @@ BOROUGHS = {
     "Wandsworth": "5E93977",
     "Westminster": "5E93980",
 }
-
-# test with single borough first before looping through all boroughs
 borough = BOROUGHS["Tower Hamlets"]
 
 # allows us to scrape the website without being blocked
@@ -53,7 +51,7 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36"
 }
 
-def scrape_rightmove(borough):
+def scrape_rightmove(borough, num_pages):
     '''
     Function to scrape the Rightmove website for property data
     :param url: URL of the Rightmove website
@@ -66,8 +64,6 @@ def scrape_rightmove(borough):
     link_list = []
 
 
-
-
     '''
     01 PAGINATE & EXTRACT THE RELEVANT DATA FROM THE WEBPAGE
     '''
@@ -75,8 +71,9 @@ def scrape_rightmove(borough):
     # index is the page number of the website
     index = 0
 
-    for pages in range(10):
-
+    for page in range(num_pages):
+        print(f"Scraping page {page + 1}/{num_pages}...")
+        
         # the website changes if the you are on page 1 as compared to other pages
         if index == 0:
             url = f"https://www.rightmove.co.uk/property-for-sale/find.html?locationIdentifier=REGION%{borough}&sortType=6&propertyTypes=&includeSSTC=false&mustHave=&dontShow=&furnishTypes=&keywords="
@@ -138,6 +135,7 @@ def scrape_rightmove(borough):
     '''
     03 CONVERT THE SCRAPED DATA INTO A PANDAS DATAFRAME & EXPORT TO CSV
     '''
+    
 
     #Create a dictionary to store the data
     data = {
@@ -158,62 +156,78 @@ def scrape_rightmove(borough):
     
     return data
 
-# Call the function
-# scrape_rightmove(borough)
 
 '''
 SCRAPE ADDITIONAL DATA FROM INDIVIDUAL PROPERTY PAGES
 '''
 
-# initiate lists to store the data
-property_type = []
-bedrooms = []
-bathrooms = []
-sq_ft = []
-sq_m = []
-tenure = []
-
-# import existing links from csv
-df = pd.read_csv('data/raw_data/rightmove_data.csv')
-links = df['links']
-
-sample_links = links[0:10]
-
-counter = 1
-
-for link in sample_links:
-    print(f"Scraping link {counter} of {len(sample_links)}...")
+def scrape_additional():
     
-    url = link
-    response = requests.get(url, headers=headers)
-    soup = BeautifulSoup(response.text, 'html.parser')
+    # Additional data to scrape
+    property_type = []
+    bedrooms = []
+    bathrooms = []
+    sq_ft = []
+    sq_m = []
+    tenure = []
 
-    property_card = soup.find_all('dd', class_='_3ZGPwl2N1mHAJH3cbltyWn')
-    info = [i.text.strip() for i in property_card]
-    info[3] = info[3].replace(' sq m', '').replace('sq ft', '').replace(',', '').split()
+
+    # import existing links from csv
+    df = pd.read_csv('data/raw_data/rightmove_data.csv')
+    links = df['links']
+
+    counter = 1
+
+    for link in links:
+        print(f"Scraping link {counter} of {len(links)}...")
+        
+        url = link
+        response = requests.get(url, headers=headers)
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        property_card = soup.find_all('dd', class_='_3ZGPwl2N1mHAJH3cbltyWn')
+        info = [i.text.strip() for i in property_card]
+        info[3] = info[3].replace(' sq m', '').replace('sq ft', '').replace(',', '').split()
 
 
-    # append the data to the lists
-    property_type.append(info[0])
-    bedrooms.append(info[1])
-    bathrooms.append(info[2])
-    sq_ft.append(info[3][0])
-    sq_m.append(info[3][1])
-    tenure.append(info[4])
+        # append the data to the lists
+        property_type.append(info[0])
+        bedrooms.append(info[1])
+        bathrooms.append(info[2])
+        sq_ft.append(info[3][0])
+        sq_m.append(info[3][1])
+        tenure.append(info[4])
 
-    # code to ensure that we do not overwhelm the website
-    time.sleep(random.randint(1, 3))
-    counter += 1
+        # code to ensure that we do not overwhelm the website
+        time.sleep(random.randint(1, 3))
+        counter += 1
+        
+    # Debug to check output
+    # print(property_type)
+    # print(bedrooms)
+    # print(bathrooms)
+    # print(sq_ft)
+    # print(sq_m)
+    # print(tenure)
+
+    if len(property_type) == len(bedrooms) == len(bathrooms) == len(sq_ft) == len(sq_m) == len(tenure):
+        print("Data scraped successfully!")
+    else:
+        print('length of list not matching!')
+
+    # Create a dictionary to store the data
+    data = {
+        "property_type": property_type,
+        "bedrooms": bedrooms,
+        "bathrooms": bathrooms,
+        "sq_ft": sq_ft,
+        "sq_m": sq_m,
+        "tenure": tenure
+    }
     
-# Debug to check output
-# print(property_type)
-# print(bedrooms)
-# print(bathrooms)
-# print(sq_ft)
-# print(sq_m)
-# print(tenure)
-
-if len(property_type) == len(bedrooms) == len(bathrooms) == len(sq_ft) == len(sq_m) == len(tenure):
-    print("Data scraped successfully!")
-else:
-    print('length of list not matching!')
+    # Add to existing dataframe and export to csv
+    pd.DataFrame(data).to_csv('data/raw_data/rightmove_extra.csv', index=False)
+    
+# Call the function
+# scrape_rightmove(borough=borough, num_pages=2)
+scrape_additional()
