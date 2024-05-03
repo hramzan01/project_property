@@ -48,6 +48,11 @@ BOROUGHS = {
 # test with single borough first before looping through all boroughs
 borough = BOROUGHS["Tower Hamlets"]
 
+# allows us to scrape the website without being blocked
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36"
+}
+
 def scrape_rightmove(borough):
     '''
     Function to scrape the Rightmove website for property data
@@ -61,10 +66,6 @@ def scrape_rightmove(borough):
     link_list = []
 
 
-    # allows us to scrape the website without being blocked
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36"
-    }
 
 
     '''
@@ -158,8 +159,61 @@ def scrape_rightmove(borough):
     return data
 
 # Call the function
-scrape_rightmove(borough)
+# scrape_rightmove(borough)
 
 '''
 SCRAPE ADDITIONAL DATA FROM INDIVIDUAL PROPERTY PAGES
 '''
+
+# initiate lists to store the data
+property_type = []
+bedrooms = []
+bathrooms = []
+sq_ft = []
+sq_m = []
+tenure = []
+
+# import existing links from csv
+df = pd.read_csv('data/raw_data/rightmove_data.csv')
+links = df['links']
+
+sample_links = links[0:10]
+
+counter = 1
+
+for link in sample_links:
+    print(f"Scraping link {counter} of {len(sample_links)}...")
+    
+    url = link
+    response = requests.get(url, headers=headers)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    property_card = soup.find_all('dd', class_='_3ZGPwl2N1mHAJH3cbltyWn')
+    info = [i.text.strip() for i in property_card]
+    info[3] = info[3].replace(' sq m', '').replace('sq ft', '').replace(',', '').split()
+
+
+    # append the data to the lists
+    property_type.append(info[0])
+    bedrooms.append(info[1])
+    bathrooms.append(info[2])
+    sq_ft.append(info[3][0])
+    sq_m.append(info[3][1])
+    tenure.append(info[4])
+
+    # code to ensure that we do not overwhelm the website
+    time.sleep(random.randint(1, 3))
+    counter += 1
+    
+# Debug to check output
+# print(property_type)
+# print(bedrooms)
+# print(bathrooms)
+# print(sq_ft)
+# print(sq_m)
+# print(tenure)
+
+if len(property_type) == len(bedrooms) == len(bathrooms) == len(sq_ft) == len(sq_m) == len(tenure):
+    print("Data scraped successfully!")
+else:
+    print('length of list not matching!')
