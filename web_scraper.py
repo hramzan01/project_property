@@ -8,12 +8,6 @@ from bs4 import BeautifulSoup
 00 PARSE RIGHTMOVE WEBSITE FOR PROPERTY DATA
 '''
 
-# Lists to store the desired data
-price_list = []
-address_list = []
-description_list = []
-link_list = []
-
 # Dictionary of London boroughs and their corresponding Rightmove IDs
 BOROUGHS = {
     "City of London": "5E61224",
@@ -54,96 +48,118 @@ BOROUGHS = {
 # test with single borough first before looping through all boroughs
 borough = BOROUGHS["Tower Hamlets"]
 
-# allows us to scrape the website without being blocked
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36"
-}
+def scrape_rightmove(borough):
+    '''
+    Function to scrape the Rightmove website for property data
+    :param url: URL of the Rightmove website
+    :return: List of prices, addresses, descriptions and links
+    '''
+    # Lists to store the desired data
+    price_list = []
+    address_list = []
+    description_list = []
+    link_list = []
 
+
+    # allows us to scrape the website without being blocked
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36"
+    }
+
+
+    '''
+    01 PAGINATE & EXTRACT THE RELEVANT DATA FROM THE WEBPAGE
+    '''
+
+    # index is the page number of the website
+    index = 0
+
+    for pages in range(10):
+
+        # the website changes if the you are on page 1 as compared to other pages
+        if index == 0:
+            url = f"https://www.rightmove.co.uk/property-for-sale/find.html?locationIdentifier=REGION%{borough}&sortType=6&propertyTypes=&includeSSTC=false&mustHave=&dontShow=&furnishTypes=&keywords="
+
+        elif index != 0:
+            url = f"https://www.rightmove.co.uk/property-for-sale/find.html?locationIdentifier=REGION%{borough}&sortType=6&index={index}&propertyTypes=&includeSSTC=false&mustHave=&dontShow=&furnishTypes=&keywords="
+
+        # get the webpage
+        response = requests.get(url, headers=headers)
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        # try to get the number of properties for sale in the borough
+        property_count = soup.find("span", class_="searchHeader-resultCount").text
+        property_count = property_count.replace(',', '')
+
+        # now try to get the prices
+        prices = soup.find_all('div', class_="propertyCard-priceValue")
+        prices = [price.text.strip() for price in prices]
+        for price in prices:
+            price = price.replace('£', '')
+            price = price.replace(',', '')
+            price_list.append(price)
+
+        # now try to get the addresses
+        locations = soup.find_all('address', class_="propertyCard-address")
+        locations = [address.text.strip() for address in locations]
+        for address in locations:
+            address_list.append(address)
+
+        # next is description of the property
+        description = soup.find_all('div', class_="propertyCard-description")
+        description = [desc.text.strip() for desc in description]
+        for desc in description:
+            description_list.append(desc)
+
+        # # finaly the link to the property
+        links = soup.find_all('a', class_="propertyCard-link")
+        links = [link['href'] for link in links]
+        ulinks = []
+        for link in links:
+            if link not in ulinks:
+                ulinks.append(link)
+
+        # Replace missing links with "missing"
+        links = [f'https://www.rightmove.co.uk{link}' if link else "missing" for link in ulinks]
+        for link in links:
+            link_list.append(link)
+
+        # code to ensure that we do not overwhelm the website
+        time.sleep(random.randint(1, 3))
+
+        # Code to count how many listings we have scrapped already.
+        index = index + 24
+
+        if index >= int(property_count):
+            break
+
+
+    '''
+    03 CONVERT THE SCRAPED DATA INTO A PANDAS DATAFRAME & EXPORT TO CSV
+    '''
+
+    #Create a dictionary to store the data
+    data = {
+        "prices": price_list,
+        "locations": address_list,
+        "description": description_list,
+        "links": link_list
+    }
+
+    # Debug to check output
+    print(len(price_list))
+    print(len(address_list))
+    print(len(description_list))
+    print(len(link_list))
+
+    # Convert to dataframe and export csv
+    pd.DataFrame(data).to_csv('data/raw_data/rightmove_data.csv', index=False)
+    
+    return data
+
+# Call the function
+scrape_rightmove(borough)
 
 '''
-01 PAGINATE & EXTRACT THE RELEVANT DATA FROM THE WEBPAGE
+SCRAPE ADDITIONAL DATA FROM INDIVIDUAL PROPERTY PAGES
 '''
-
-# index is the page number of the website
-index = 0
-
-for pages in range(10):
-
-    # the website changes if the you are on page 1 as compared to other pages
-    if index == 0:
-        url = f"https://www.rightmove.co.uk/property-for-sale/find.html?locationIdentifier=REGION%{borough}&sortType=6&propertyTypes=&includeSSTC=false&mustHave=&dontShow=&furnishTypes=&keywords="
-
-    elif index != 0:
-        url = f"https://www.rightmove.co.uk/property-for-sale/find.html?locationIdentifier=REGION%{borough}&sortType=6&index={index}&propertyTypes=&includeSSTC=false&mustHave=&dontShow=&furnishTypes=&keywords="
-
-    # get the webpage
-    response = requests.get(url, headers=headers)
-    soup = BeautifulSoup(response.text, 'html.parser')
-
-    # try to get the number of properties for sale in the borough
-    property_count = soup.find("span", class_="searchHeader-resultCount").text
-    property_count = property_count.replace(',', '')
-
-    # now try to get the prices
-    prices = soup.find_all('div', class_="propertyCard-priceValue")
-    prices = [price.text.strip() for price in prices]
-    for price in prices:
-        price = price.replace('£', '')
-        price = price.replace(',', '')
-        price_list.append(price)
-
-    # now try to get the addresses
-    locations = soup.find_all('address', class_="propertyCard-address")
-    locations = [address.text.strip() for address in locations]
-    for address in locations:
-        address_list.append(address)
-
-    # next is description of the property
-    description = soup.find_all('div', class_="propertyCard-description")
-    description = [desc.text.strip() for desc in description]
-    for desc in description:
-        description_list.append(desc)
-
-    # # finaly the link to the property
-    links = soup.find_all('a', class_="propertyCard-link")
-    links = [link['href'] for link in links]
-    ulinks = []
-    for link in links:
-        if link not in ulinks:
-            ulinks.append(link)
-
-    # Replace missing links with "missing"
-    links = [f'https://www.rightmove.co.uk{link}' if link else "missing" for link in ulinks]
-    for link in links:
-        link_list.append(link)
-
-    # code to ensure that we do not overwhelm the website
-    time.sleep(random.randint(1, 3))
-
-    # Code to count how many listings we have scrapped already.
-    index = index + 24
-
-    if index >= int(property_count):
-        break
-
-
-'''
-03 CONVERT THE SCRAPED DATA INTO A PANDAS DATAFRAME & EXPORT TO CSV
-'''
-
-#Create a dictionary to store the data
-data = {
-    "prices": price_list,
-    "locations": address_list,
-    "description": description_list,
-    "links": link_list
-}
-
-# Debug to check output
-print(len(price_list))
-print(len(address_list))
-print(len(description_list))
-print(len(link_list))
-
-# Convert to dataframe and export csv
-pd.DataFrame(data).to_csv('data/raw_data/rightmove_data.csv', index=False)
