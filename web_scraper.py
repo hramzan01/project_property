@@ -249,9 +249,9 @@ def scrape_all(borough, num_pages):
     
     combined_data.to_csv('data/raw_data/rightmove_combined.csv', index=False)
 
-
-
-# Call the function
+'''
+03 RUN THE FUNCTIONS
+'''
 # scrape_rightmove(borough=borough, num_pages=2)
 # scrape_additional()
 scrape_all(borough=borough, num_pages=2)
