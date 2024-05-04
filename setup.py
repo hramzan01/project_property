@@ -7,7 +7,7 @@ with open('requirements.txt') as f:
 requirements = [x.strip() for x in content]
 
 setup(
-    name='property_web_scraper',
+    name='scraper',
     description='A web scraper to scrape property data from a rightmove.co.uk search page.',
     version='0.1',
     packages=find_packages(),
