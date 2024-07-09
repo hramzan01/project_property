@@ -1,28 +1,30 @@
 import streamlit as st
-import pandas as pd 
+import pandas as pd
 import plotly.express as px
 
 # Home Page
 # Load data
-df = pd.read_csv('data/processed_data/processed_property_search.csv')
+df = pd.read_csv('data/processed_data/rightmove_combined.csv')
+df = df[df['postcode'] != '0']
 
+print(df.columns)
 
 # Create Plotly figure
 fig = px.scatter_mapbox(
     df,
-    lat='lat',
-    lon='lon',
+    lat='latitude',
+    lon='longitude',
     mapbox_style='carto-positron',
     zoom=11.5,
-    hover_data={'name': True,
-                'beds': True,
-                'wc': True,
-                'garden': True,
-                'area_sft': True,
-                'price': True,
-                'agency': True,
-                'reno_cost': True,
-                'yearly_rev': True
+    hover_data={'locations': True,
+                'prices': True,
+                'property_type': True,
+                'bedrooms': True,
+                'bathrooms': True,
+                'sq_ft': True,
+                'sq_m': True,
+                'tenure': True,
+                'postcode': True
     }
 )
 
@@ -42,10 +44,10 @@ numeric_df = df.select_dtypes(include=['float64', 'int64'])
 
 # Standardize the data
 df_standardized = (numeric_df - numeric_df.mean()) / numeric_df.std()
-df_standardized = df_standardized[['price','reno_cost','yearly_rev']]
+df_standardized = df_standardized[['prices','sq_ft',]]
 
 # Plot the standardized data
-fig2 = px.line(df_standardized, x=df.name, y=df_standardized.columns,
+fig2 = px.line(df_standardized, x=df.description, y=df_standardized.columns,
                labels={'value': 'Standardized Value', 'variable': 'Variable', 'index': 'Date'},
                title="Standardized Numeric Columns Over Time")
 
