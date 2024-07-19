@@ -110,7 +110,6 @@ def scrape_rightmove(num_pages, user_location):
                         unique_links.add(href)
                         full_link = f'https://www.rightmove.co.uk{href}' if href else "missing"
                         link_list.append(full_link)
-                print(f'length of links list: {len(links)}')
                 
                 # Check if list lengths match
                 if len(price_list) == len(address_list) == len(description_list) == len(link_list):
@@ -237,8 +236,11 @@ def scrape_additional():
         # generate postcode from lat and lon
         postcode_api = f'https://api.postcodes.io/postcodes?lon={lon}&lat={lat}'
 
-        response = requests.get(postcode_api).json()
-        pcode = response['result'][0]['postcode']
+        try:
+            response = requests.get(postcode_api).json()
+            pcode = response.get('result', [{}])[0].get('postcode', 'N/A')
+        except (KeyError, IndexError, TypeError):
+            pcode = 'N/A'
 
         # append the data to the lists
         property_type.append(info[0])
@@ -309,3 +311,9 @@ def scrape_all(num_pages, user_location):
 # scrape_rightmove()
 # scrape_additional()
 scrape_all(4, 'Barnet')
+
+
+# # Loop through all boroughs
+# for borough in list(boroughs.keys()):
+#     scrape_all(4, borough)
+#     print(f"Scraping for {borough} completed!")
