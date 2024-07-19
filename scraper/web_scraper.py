@@ -25,8 +25,8 @@ def scrape_rightmove():
     :return: List of prices, addresses, descriptions and links
     '''
 
-    num_pages = int(input("How many pages would you like to scrape? "))
-    user_location = str(input("Enter the borough you would like to scrape: "))
+    num_pages = int(input("How many pages would you like to scrape? (0 for all pages) "))
+    user_location = str(input("Enter the borough you would like to scrape: ").capitalize())
     borough = boroughs[user_location]
 
     # Lists to store the desired data
@@ -35,6 +35,15 @@ def scrape_rightmove():
     description_list = []
     link_list = []
 
+    url = f"https://www.rightmove.co.uk/property-for-sale/find.html?locationIdentifier=REGION%{borough}&sortType=6&propertyTypes=&includeSSTC=false&mustHave=&dontShow=&furnishTypes=&keywords="
+    response = requests.get(url, headers=headers)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    if num_pages < 1:
+        entries = soup.find('span', class_='searchHeader-resultCount').text
+        if ',' in entries:
+            entries = entries.replace(',', '')
+        num_pages = int(entries)//24 + 1
 
     '''
     01 PAGINATE & EXTRACT THE RELEVANT DATA FROM THE WEBPAGE
@@ -60,12 +69,9 @@ def scrape_rightmove():
         # get max pages per borough
         # entries = int(soup.find('span', class_='searchHeader-resultCount').text)
         entries = soup.find('span', class_='searchHeader-resultCount').text
-        
         if ',' in entries:
             entries = entries.replace(',', '')
-        
         max_pages = int(entries)//24 + 1
-        breakpoint()
         
         # try to get the number of properties for sale in the borough
         property_count = soup.find("span", class_="searchHeader-resultCount").text
@@ -127,10 +133,13 @@ def scrape_rightmove():
         "links": link_list
     }
 
+    # add borough to the data
+    data['borough'] = user_location
+
     # Convert to dataframe and export csv
     pd.DataFrame(data).to_csv('data/processed_data/rightmove_data.csv', index=False)
 
-    return data
+    return data, user_location
 
 '''
 01 SCRAPE ADDITIONAL DATA FROM INDIVIDUAL PROPERTY PAGES
@@ -147,7 +156,6 @@ def scrape_additional():
     latitude = []
     longitude = []
     postcode = []
-
 
     # import existing links from csv
     df = pd.read_csv('data/processed_data/rightmove_data.csv')
@@ -257,19 +265,24 @@ def scrape_additional():
     # Add to existing dataframe and export to csv
     pd.DataFrame(data).to_csv('data/processed_data/rightmove_extra.csv', index=False)
 
+    
     return data
 
 '''
 02 COMBINE THE TWO DATAFRAMES INTO ONE
 '''
 def scrape_all():
+    
+    # Call the function to scrape the data
+    basic_data, user_location = scrape_rightmove()
+
     # Call the two functions    
-    basic_data = pd.DataFrame(scrape_rightmove())
+    basic_data = pd.DataFrame(basic_data)
     extra_data = pd.DataFrame(scrape_additional())
 
     combined_data = pd.concat([basic_data, extra_data], axis=1)
 
-    combined_data.to_csv('data/processed_data/rightmove_combined.csv', index=False)
+    combined_data.to_csv(f'data/processed_data/{user_location.lower()}_property_data.csv', index=False)
 
     # delete the individual files
     os.remove('data/processed_data/rightmove_data.csv')
