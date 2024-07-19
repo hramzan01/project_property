@@ -56,7 +56,17 @@ def scrape_rightmove():
         # get the webpage
         response = requests.get(url, headers=headers)
         soup = BeautifulSoup(response.text, 'html.parser')
-
+        
+        # get max pages per borough
+        # entries = int(soup.find('span', class_='searchHeader-resultCount').text)
+        entries = soup.find('span', class_='searchHeader-resultCount').text
+        
+        if ',' in entries:
+            entries = entries.replace(',', '')
+        
+        max_pages = int(entries)//24 + 1
+        breakpoint()
+        
         # try to get the number of properties for sale in the borough
         property_count = soup.find("span", class_="searchHeader-resultCount").text
         property_count = property_count.replace(',', '')
@@ -253,7 +263,7 @@ def scrape_additional():
 02 COMBINE THE TWO DATAFRAMES INTO ONE
 '''
 def scrape_all():
-    # Call the two functions
+    # Call the two functions    
     basic_data = pd.DataFrame(scrape_rightmove())
     extra_data = pd.DataFrame(scrape_additional())
 
