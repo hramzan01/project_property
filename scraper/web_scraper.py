@@ -1,4 +1,5 @@
 import requests
+from requests.exceptions import RequestException
 import pandas as pd
 import time
 import random
@@ -18,15 +19,15 @@ boroughs = json.load(open('data/raw_data/boroughs.json'))
 '''
 00 PARSE RIGHTMOVE WEBSITE FOR PROPERTY DATA
 '''
-def scrape_rightmove():
+def scrape_rightmove(num_pages, user_location):
     '''
     Function to scrape the Rightmove website for property data
     :param url: URL of the Rightmove website
     :return: List of prices, addresses, descriptions and links
     '''
 
-    num_pages = int(input("How many pages would you like to scrape? (0 for all pages) "))
-    user_location = str(input("Enter the borough you would like to scrape: ").capitalize())
+    # num_pages = int(input("How many pages would you like to scrape? (0 for all pages) "))
+    # user_location = str(input("Enter the borough you would like to scrape: "))
     borough = boroughs[user_location]
 
     # Lists to store the desired data
@@ -62,54 +63,68 @@ def scrape_rightmove():
         elif index != 0:
             url = f"https://www.rightmove.co.uk/property-for-sale/find.html?locationIdentifier=REGION%{borough}&sortType=6&index={index}&propertyTypes=&includeSSTC=false&mustHave=&dontShow=&furnishTypes=&keywords="
 
-        # get the webpage
-        response = requests.get(url, headers=headers)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        
-        # get max pages per borough
-        # entries = int(soup.find('span', class_='searchHeader-resultCount').text)
-        entries = soup.find('span', class_='searchHeader-resultCount').text
-        if ',' in entries:
-            entries = entries.replace(',', '')
-        max_pages = int(entries)//24 + 1
-        
-        # try to get the number of properties for sale in the borough
-        property_count = soup.find("span", class_="searchHeader-resultCount").text
-        property_count = property_count.replace(',', '')
+       
+        for attempt in range(5):  # Retry up to 5 times
+            try:
+                # get the webpage
+                response = requests.get(url, headers=headers)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                
+                # get max pages per borough
+                # entries = int(soup.find('span', class_='searchHeader-resultCount').text)
+                entries = soup.find('span', class_='searchHeader-resultCount').text
+                if ',' in entries:
+                    entries = entries.replace(',', '')
+                max_pages = int(entries)//24 + 1
+                
+                # try to get the number of properties for sale in the borough
+                property_count = soup.find("span", class_="searchHeader-resultCount").text
+                property_count = property_count.replace(',', '')
 
-        # now try to get the prices
-        prices = soup.find_all('div', class_="propertyCard-priceValue")
-        prices = [price.text.strip() for price in prices]
-        for price in prices:
-            price = price.replace('£', '')
-            price = price.replace(',', '')
-            price_list.append(price)
+                # now try to get the prices
+                prices = soup.find_all('div', class_="propertyCard-priceValue")
+                prices = [price.text.strip() for price in prices]
+                for price in prices:
+                    price = price.replace('£', '')
+                    price = price.replace(',', '')
+                    price_list.append(price)
 
-        # now try to get the addresses
-        locations = soup.find_all('address', class_="propertyCard-address")
-        locations = [address.text.strip() for address in locations]
-        for address in locations:
-            address_list.append(address)
+                # now try to get the addresses
+                locations = soup.find_all('address', class_="propertyCard-address")
+                locations = [address.text.strip() for address in locations]
+                for address in locations:
+                    address_list.append(address)
 
-        # next is description of the property
-        description = soup.find_all('div', class_="propertyCard-description")
-        description = [desc.text.strip() for desc in description]
-        for desc in description:
-            description_list.append(desc)
+                # next is description of the property
+                description = soup.find_all('div', class_="propertyCard-description")
+                description = [desc.text.strip() for desc in description]
+                for desc in description:
+                    description_list.append(desc)
 
-        # # finaly the link to the property
-        links = soup.find_all('a', class_="propertyCard-link")
-        links = [link['href'] for link in links]
-        ulinks = []
-        for link in links:
-            if link not in ulinks:
-                ulinks.append(link)
+                # # finaly the link to the property
+                links = soup.find_all('a', class_="propertyCard-link")
+                unique_links = set()
+                for link in links:
+                    href = link['href']
+                    if href not in unique_links:
+                        unique_links.add(href)
+                        full_link = f'https://www.rightmove.co.uk{href}' if href else "missing"
+                        link_list.append(full_link)
+                print(f'length of links list: {len(links)}')
+                
+                # Check if list lengths match
+                if len(price_list) == len(address_list) == len(description_list) == len(link_list):
+                    break  # Exit the retry loop if successful
 
-        # Replace missing links with "missing"
-        links = [f'https://www.rightmove.co.uk{link}' if link else "missing" for link in ulinks]
-        for link in links:
-            link_list.append(link)
+                else:
+                    print(f"Mismatch in lengths after page {page + 1}, attempt {attempt + 1}. Retrying...")
 
+            except RequestException as e:
+                print(f"Error on page {page + 1}, attempt {attempt + 1}: {e}")
+                time.sleep(2)  # Wait before retrying
+                continue
+
+                
         # code to ensure that we do not overwhelm the website
         time.sleep(random.randint(1, 3))
 
@@ -118,8 +133,7 @@ def scrape_rightmove():
 
         if index >= int(property_count):
             break
-
-
+        
     '''
     03 CONVERT THE SCRAPED DATA INTO A PANDAS DATAFRAME & EXPORT TO CSV
     '''
@@ -271,10 +285,10 @@ def scrape_additional():
 '''
 02 COMBINE THE TWO DATAFRAMES INTO ONE
 '''
-def scrape_all():
+def scrape_all(num_pages, user_location):
     
     # Call the function to scrape the data
-    basic_data, user_location = scrape_rightmove()
+    basic_data, user_location = scrape_rightmove(num_pages, user_location)
 
     # Call the two functions    
     basic_data = pd.DataFrame(basic_data)
@@ -292,6 +306,6 @@ def scrape_all():
 '''
 03 RUN THE FUNCTIONS
 '''
-# scrape_rightmove(borough=borough, num_pages=2)
+# scrape_rightmove()
 # scrape_additional()
-scrape_all()
+scrape_all(4, 'Barnet')
