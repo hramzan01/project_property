@@ -117,10 +117,11 @@ def scrape_rightmove(num_pages, user_location):
 
                 else:
                     print(f"Mismatch in lengths after page {page + 1}, attempt {attempt + 1}. Retrying...")
+                    time.sleep(10)   # Wait before retrying
 
             except RequestException as e:
                 print(f"Error on page {page + 1}, attempt {attempt + 1}: {e}")
-                time.sleep(2)  # Wait before retrying
+                time.sleep(5)  # Wait before retrying
                 continue
 
                 
@@ -310,7 +311,12 @@ def scrape_all(num_pages, user_location):
 '''
 # scrape_rightmove()
 # scrape_additional()
-scrape_all(4, 'Barnet')
+# scrape_all(4, 'Brent') # 4 pages is roughly 100 listings
+
+# get filenames of all boroughs from processed data
+files = os.listdir('data/processed_data')
+borough_collection = [file.split('_')[0].capitalize() for file in files]
+print(borough_collection)
 
 
 # # Loop through all boroughs
