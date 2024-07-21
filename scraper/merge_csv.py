@@ -1,7 +1,9 @@
 import pandas as pd 
 import os
 
-# Function to merge multiple CSV files into a single DataFrame
+
+'''FUNCTION TO MERGE MULTIPLE CSV FILES'''
+
 def merge_csv_files(file_list):
     df_list = [pd.read_csv(f'data/processed_data/{file}') for file in file_list]
     merged_df = pd.concat(df_list, ignore_index=True)

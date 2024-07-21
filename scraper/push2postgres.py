@@ -3,6 +3,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
 
+
 # Load environment variables
 USER = os.environ.get('USER')
 DOMAIN = os.environ.get('DOMAIN')
@@ -30,5 +31,5 @@ def read_from_postgres(table_name, limit):
 # df = pd.read_csv('data/processed_data/merged_data.csv')
 # push_to_postgres(df, 'properties')
 
-df = read_from_postgres('properties', 10)
-print(df)
+# df = read_from_postgres('properties', 10)
+# print(df)
