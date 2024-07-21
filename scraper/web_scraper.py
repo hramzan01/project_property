@@ -54,7 +54,7 @@ def scrape_rightmove(num_pages, user_location):
     index = 0
 
     for page in range(num_pages):
-        print(f"Scraping page {page + 1}/{num_pages}...")
+        print(f"Scraping {user_location} page {page + 1}/{num_pages}...")
 
         # the website changes if the you are on page 1 as compared to other pages
         if index == 0:
@@ -178,7 +178,7 @@ def scrape_additional():
     counter = 1
 
     for link in links:
-        print(f"Scraping link {counter} of {len(links)}...")
+        print(f"Scraping {borough} link {counter} of {len(links)}...")
 
         url = link
         response = requests.get(url, headers=headers)
@@ -316,10 +316,9 @@ def scrape_all(num_pages, user_location):
 # get filenames of all boroughs from processed data
 files = os.listdir('data/processed_data')
 borough_collection = [file.split('_')[0].capitalize() for file in files]
-print(borough_collection)
-
 
 # # Loop through all boroughs
-# for borough in list(boroughs.keys()):
-#     scrape_all(4, borough)
-#     print(f"Scraping for {borough} completed!")
+for borough in list(boroughs.keys()):
+    if borough not in borough_collection:
+        scrape_all(4, borough)
+        print(f"Scraping for {borough} completed!")

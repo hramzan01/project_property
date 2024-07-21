@@ -1,59 +1,67 @@
-import streamlit as st
 import pandas as pd
+from PIL import Image
+import streamlit as st
 import plotly.express as px
+from streamlit.components.v1 import html
+
+st.set_page_config(page_title="Project Property")
+
+
+# Background
+st.markdown(
+    """
+    <style>
+    # [data-testid="stHeader"] {
+        background-color: darkpink;
+    }
+    </style>
+    """
+    """
+    <style>
+    [data-testid="stApp"] {
+        background: linear-gradient(180deg, rgba(295, 152, 223, 1) 0%, rgba(0,0,0) 47%, rgba(0,0,0) 100%);
+        height:auto;
+    }
+    </style>
+    """
+    """
+    <style>
+    [data-testid="stSlider"] {
+        background-color: #EEF0F4;
+        border-radius: 5px;
+        padding: 10px;
+    }
+    </style>
+    """
+    """
+    <style>
+        .stPlotlyChart {
+            border-radius: 10px;
+            overflow: hidden; /* This is important to ensure the border radius is applied properly */
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+with st.container():
+
+    # HOME: Property logo
+    # col1, col2, col3 = st.columns([1, 2, 1])
+
+    # Load in images
+    logo = Image.open('app/assets/logo.png')
+    
+    st.image(logo, use_column_width=True)
+    st.markdown('')  # Empty markdown line for spacing
+    st.markdown('')  # Empty markdown line for spacing
+    st.markdown('')  # Empty markdown line for spacing
+    st.markdown('')  # Empty markdown line for spacing
+    st.markdown('')  # Empty markdown line for spacing
+
+
+    # st.markdown('')
+    # st.write("""Project Property&#8482; is a property crawler which helps you collect property data.""")
+
 
 # Home Page
-# Load data
-df = pd.read_csv('data/processed_data/rightmove_combined.csv')
-df = df[df['postcode'] != '0']
-
-print(df.columns)
-
-# Create Plotly figure
-fig = px.scatter_mapbox(
-    df,
-    lat='latitude',
-    lon='longitude',
-    mapbox_style='carto-positron',
-    zoom=11.5,
-    hover_data={'locations': True,
-                'prices': True,
-                'property_type': True,
-                'bedrooms': True,
-                'bathrooms': True,
-                'sq_ft': True,
-                'sq_m': True,
-                'tenure': True,
-                'postcode': True
-    }
-)
-
-fig.update_traces(marker=dict(size=10))
-
-fig.update_layout(
-    margin={"r":0,"t":40,"l":0,"b":0},
-)
-
-# Display Plotly figure in Streamlit
-st.title('Property Optimiser')
-st.plotly_chart(fig)
-st.dataframe(df)
-
-# Select numeric columns only
-numeric_df = df.select_dtypes(include=['float64', 'int64'])
-
-# Standardize the data
-df_standardized = (numeric_df - numeric_df.mean()) / numeric_df.std()
-df_standardized = df_standardized[['prices','sq_ft',]]
-
-# Plot the standardized data
-fig2 = px.line(df_standardized, x=df.description, y=df_standardized.columns,
-               labels={'value': 'Standardized Value', 'variable': 'Variable', 'index': 'Date'},
-               title="Standardized Numeric Columns Over Time")
-
-# Customize layout to hide grid lines and set transparent background
-fig2.update_layout(xaxis=dict(showgrid=False), yaxis=dict(showgrid=False),
-                   plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
-
-# Display Plotly figure in Streamlit
-st.plotly_chart(fig2)

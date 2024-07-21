@@ -14,7 +14,7 @@ engine = create_engine(f'postgresql://{USER}:{PASSWORD}@{DOMAIN}:5432/postgres')
 '''PUSH TO POSTGRES'''
 def push_to_postgres(df, table_name):
     try:
-        df.to_sql(table_name, engine)
+        df.to_sql(table_name, engine, if_exists='replace', index=False)
         print('Data uploaded to Postgres')
     except OperationalError as e:
         print(f"Error: {e}")
@@ -27,8 +27,8 @@ def read_from_postgres(table_name, limit):
 
 
 # TEST FUNCTIONS
-# df = pd.read_csv('data/processed_data/processed_property_search.csv')
+# df = pd.read_csv('data/processed_data/merged_data.csv')
 # push_to_postgres(df, 'properties')
 
-# df = read_from_postgres('properties', 10)
-# print(df)
+df = read_from_postgres('properties', 10)
+print(df)
